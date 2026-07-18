@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Flan casero">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFF5F7"/>
+      <stop offset="100%" stop-color="#E07A8A"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="400" cy="410" rx="150" ry="50" fill="#FFE8EE"/>
+  <ellipse cx="400" cy="310" rx="130" ry="90" fill="#FFF5F7"/>
+  <ellipse cx="400" cy="255" rx="110" ry="35" fill="#C94B6A"/>
+  <ellipse cx="400" cy="250" rx="90" ry="22" fill="#A33854" opacity="0.65"/>
+</svg>

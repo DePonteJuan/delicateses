@@ -1,0 +1,9 @@
+name: Galletas de chocolate
+category: galletas
+description: >-
+  Galletas suaves con chips de chocolate semiamargo. Un clásico que nunca falla
+  en la merienda.
+price: 7
+image: galletas-de-chocolate.svg
+available: true
+featured: false

@@ -1,0 +1,48 @@
+---
+import type { Product } from '../lib/types';
+import { categoryLabels } from '../lib/types';
+import { formatPrice } from '../lib/format';
+import AddToCartButton from './AddToCartButton';
+
+interface Props {
+  product: Product;
+}
+
+const { product } = Astro.props;
+---
+
+<article class="product-hover group">
+  <a href={`/producto/${product.slug}`} class="block mb-4">
+    <div class="media-frame aspect-[4/3]">
+      <img
+        src={product.image ?? '/images/products/galletas-de-avena.svg'}
+        alt={product.name}
+        class="w-full h-full object-cover transition-transform duration-500"
+        loading="lazy"
+      />
+    </div>
+  </a>
+  <p class="text-xs uppercase tracking-[0.18em] text-[var(--color-berry)] mb-2 font-semibold">
+    {categoryLabels[product.category]}
+  </p>
+  <h3 class="font-display italic text-2xl md:text-[1.7rem] text-[var(--color-cocoa)] mb-2 leading-tight">
+    <a href={`/producto/${product.slug}`}>{product.name}</a>
+  </h3>
+  <p class="text-sm text-[var(--color-ink-soft)] line-clamp-2 mb-4 leading-relaxed">
+    {product.description}
+  </p>
+  <div class="flex items-center justify-between gap-3">
+    <span class="font-semibold text-[var(--color-cocoa)]">
+      {formatPrice(product.price)}
+    </span>
+    <AddToCartButton
+      client:load
+      slug={product.slug}
+      name={product.name}
+      price={product.price}
+      available={product.available}
+      className="btn-primary text-sm px-4 py-2"
+      label="Agregar"
+    />
+  </div>
+</article>

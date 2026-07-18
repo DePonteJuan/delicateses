@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Torta de zanahoria">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFE8EE"/>
+      <stop offset="100%" stop-color="#E8C9A8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="400" cy="440" rx="185" ry="36" fill="#4A2F2A" opacity="0.12"/>
+  <rect x="245" y="240" width="310" height="200" rx="28" fill="#E0B080"/>
+  <rect x="245" y="240" width="310" height="50" fill="#FFF5F7"/>
+  <rect x="260" y="310" width="280" height="14" rx="7" fill="#C5D4B8" opacity="0.7"/>
+  <rect x="260" y="350" width="280" height="14" rx="7" fill="#F7D6DE"/>
+  <path d="M390 210 L400 180 L410 210 Z" fill="#C5D4B8"/>
+  <ellipse cx="400" cy="220" rx="18" ry="10" fill="#E07A8A"/>
+</svg>

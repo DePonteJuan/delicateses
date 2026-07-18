@@ -1,0 +1,9 @@
+name: Torta tres leches
+category: tortas
+description: >-
+  La favorita de siempre: esponjosa, bañada en tres leches y coronada con crema
+  suave. Pedidos con 24h de anticipación.
+price: 32
+image: torta-tres-leches.svg
+available: true
+featured: true

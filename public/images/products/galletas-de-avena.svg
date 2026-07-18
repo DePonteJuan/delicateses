@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Galletas de avena">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FFE8EE"/>
+      <stop offset="100%" stop-color="#C5D4B8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <circle cx="280" cy="300" r="110" fill="#F5E0C8"/>
+  <circle cx="420" cy="260" r="95" fill="#E8C9A8"/>
+  <circle cx="500" cy="360" r="100" fill="#DDB892"/>
+  <circle cx="250" cy="270" r="8" fill="#C94B6A" opacity="0.55"/>
+  <circle cx="310" cy="320" r="6" fill="#A33854" opacity="0.45"/>
+  <circle cx="400" cy="240" r="7" fill="#C94B6A" opacity="0.5"/>
+  <circle cx="450" cy="280" r="5" fill="#6B4A44" opacity="0.35"/>
+  <circle cx="480" cy="340" r="7" fill="#C94B6A" opacity="0.4"/>
+</svg>

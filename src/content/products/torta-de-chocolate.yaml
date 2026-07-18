@@ -1,0 +1,9 @@
+name: Torta de chocolate
+category: tortas
+description: >-
+  Bizcocho húmedo de cacao venezolano con cobertura sedosa. Porción generosa
+  para celebrar en casa.
+price: 28
+image: torta-de-chocolate.svg
+available: true
+featured: true

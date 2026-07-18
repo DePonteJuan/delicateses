@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Quesillo tradicional">
+  <defs>
+    <linearGradient id="bg" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F7D6DE"/>
+      <stop offset="100%" stop-color="#C5D4B8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="400" cy="420" rx="160" ry="48" fill="#FFE8EE"/>
+  <path d="M270 390 Q400 190 530 390 Z" fill="#FFF5F7"/>
+  <path d="M300 370 Q400 230 500 370 Z" fill="#C94B6A" opacity="0.85"/>
+</svg>

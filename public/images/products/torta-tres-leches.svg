@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Torta tres leches">
+  <defs>
+    <linearGradient id="bg" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C5D4B8"/>
+      <stop offset="100%" stop-color="#F7D6DE"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="400" cy="440" rx="190" ry="38" fill="#4A2F2A" opacity="0.12"/>
+  <rect x="230" y="250" width="340" height="190" rx="28" fill="#FFF5F7"/>
+  <rect x="230" y="250" width="340" height="55" fill="#FFFAF5"/>
+  <rect x="245" y="320" width="310" height="14" rx="7" fill="#F7D6DE"/>
+  <rect x="245" y="355" width="310" height="14" rx="7" fill="#FFE8EE"/>
+  <circle cx="360" cy="275" r="8" fill="#C94B6A"/>
+  <circle cx="400" cy="268" r="10" fill="#E07A8A"/>
+  <circle cx="440" cy="275" r="8" fill="#C94B6A"/>
+</svg>

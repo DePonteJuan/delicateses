@@ -1,0 +1,9 @@
+name: Quesillo tradicional
+category: postres
+description: >-
+  Quesillo venezolano con textura sedosa y caramelo intenso. Ideal para llevar
+  o compartir.
+price: 10
+image: quesillo-tradicional.svg
+available: true
+featured: false

@@ -1,0 +1,9 @@
+name: Torta de zanahoria
+category: tortas
+description: >-
+  Especias cálidas, zanahoria rallada y frosting de queso crema. Equilibrio
+  entre casero y elegante.
+price: 30
+image: torta-de-zanahoria.svg
+available: true
+featured: false

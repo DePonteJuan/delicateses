@@ -1,0 +1,9 @@
+name: Galletas de avena
+category: galletas
+description: >-
+  Crujientes por fuera y tiernas por dentro, con avena tostada y un toque de
+  canela. Ideal para acompañar el café.
+price: 6
+image: galletas-de-avena.svg
+available: true
+featured: true

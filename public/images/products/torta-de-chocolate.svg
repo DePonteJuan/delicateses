@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="Torta de chocolate">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFE8EE"/>
+      <stop offset="100%" stop-color="#C94B6A"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <ellipse cx="400" cy="430" rx="180" ry="40" fill="#4A2F2A" opacity="0.2"/>
+  <rect x="240" y="230" width="320" height="200" rx="28" fill="#6B4A44"/>
+  <rect x="240" y="230" width="320" height="55" rx="28" fill="#4A2F2A"/>
+  <rect x="255" y="300" width="290" height="16" rx="8" fill="#E07A8A" opacity="0.45"/>
+  <rect x="255" y="340" width="290" height="16" rx="8" fill="#F7D6DE" opacity="0.35"/>
+  <circle cx="320" cy="210" r="14" fill="#FFF5F7"/>
+  <circle cx="400" cy="200" r="16" fill="#FFE8EE"/>
+  <circle cx="480" cy="210" r="14" fill="#FFF5F7"/>
+</svg>
