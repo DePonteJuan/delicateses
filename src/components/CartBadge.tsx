@@ -30,7 +30,7 @@ export default function CartBadge() {
 
   return (
     <span
-      className={`absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-lg bg-[var(--color-berry)] text-white text-xs font-semibold grid place-items-center ${pop ? 'cart-badge-pop' : ''}`}
+      className={`absolute -top-1 -right-1 min-w-5 h-5 px-1 rounded-lg bg-[var(--color-berry)] text-[var(--color-cocoa)] text-xs font-semibold grid place-items-center ${pop ? 'cart-badge-pop' : ''}`}
     >
       {count}
     </span>

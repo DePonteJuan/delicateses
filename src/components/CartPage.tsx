@@ -35,16 +35,19 @@ export default function CartPage({
   }, []);
 
   const total = useMemo(() => getCartTotal(items), [items]);
+  const hasCustom = useMemo(
+    () => items.some((item) => item.isCustomOrder),
+    [items],
+  );
 
   const whatsappUrl = useMemo(() => {
     if (items.length === 0) return null;
     const message = buildOrderMessage({
       greeting: orderGreeting,
       items,
-      paymentNote,
     });
     return buildWhatsAppUrl(whatsappNumber, message);
-  }, [items, orderGreeting, paymentNote, whatsappNumber]);
+  }, [items, orderGreeting, whatsappNumber]);
 
   if (items.length === 0) {
     return (
@@ -77,40 +80,50 @@ export default function CartPage({
       <ul className="space-y-2 mb-10">
         {items.map((item) => (
           <li
-            key={item.slug}
+            key={item.id}
             className="flex flex-col sm:flex-row sm:items-center gap-4 py-5 px-4 rounded-2xl bg-white/55 border border-[var(--color-berry)]/10"
           >
             <div className="flex-1">
               <p className="font-display italic text-xl text-[var(--color-cocoa)]">
                 {item.name}
+                {item.size ? (
+                  <span className="not-italic text-base text-[var(--color-ink-soft)]">
+                    {' '}
+                    · {item.size}
+                  </span>
+                ) : null}
               </p>
               <p className="text-sm text-[var(--color-ink-soft)]">
-                {formatPrice(item.price)} c/u
+                {item.isCustomOrder
+                  ? 'Precio según petición'
+                  : `${formatPrice(item.price)} c/u`}
               </p>
             </div>
 
             <div className="flex items-center gap-3">
-              <label className="sr-only" htmlFor={`qty-${item.slug}`}>
+              <label className="sr-only" htmlFor={`qty-${item.id}`}>
                 Cantidad de {item.name}
               </label>
               <input
-                id={`qty-${item.slug}`}
+                id={`qty-${item.id}`}
                 type="number"
                 min={1}
                 value={item.qty}
                 onChange={(event) => {
                   const qty = Number(event.target.value);
-                  setItems(setCartQty(item.slug, Number.isNaN(qty) ? 1 : qty));
+                  setItems(setCartQty(item.id, Number.isNaN(qty) ? 1 : qty));
                 }}
                 className="w-16 border border-[var(--color-berry)]/20 bg-[var(--color-vanilla)] rounded-xl px-2 py-1.5 text-center"
               />
-              <p className="w-20 text-right font-semibold text-[var(--color-cocoa)]">
-                {formatPrice(item.price * item.qty)}
+              <p className="w-24 text-right font-semibold text-[var(--color-cocoa)]">
+                {item.isCustomOrder
+                  ? 'A cotizar'
+                  : formatPrice(item.price * item.qty)}
               </p>
               <button
                 type="button"
-                onClick={() => setItems(removeFromCart(item.slug))}
-                className="text-sm text-[var(--color-berry)] underline-offset-2 hover:underline"
+                onClick={() => setItems(removeFromCart(item.id))}
+                className="text-sm text-[var(--color-berry-deep)] underline-offset-2 hover:underline"
               >
                 Quitar
               </button>
@@ -122,11 +135,16 @@ export default function CartPage({
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-8">
         <div>
           <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-ink-soft)] mb-1 font-semibold">
-            Total
+            {hasCustom ? 'Total catalogado' : 'Total'}
           </p>
           <p className="font-display italic text-4xl text-[var(--color-cocoa)]">
             {formatPrice(total)}
           </p>
+          {hasCustom && (
+            <p className="mt-2 text-sm text-[var(--color-ink-soft)]">
+              El encargo personalizado se cotiza aparte.
+            </p>
+          )}
         </div>
         <button
           type="button"
@@ -157,9 +175,11 @@ export default function CartPage({
         </p>
       )}
 
-      <p className="mt-6 text-sm text-[var(--color-ink-soft)] max-w-xl leading-relaxed">
-        {paymentNote}
-      </p>
+      {paymentNote ? (
+        <p className="mt-6 text-sm text-[var(--color-ink-soft)] max-w-xl leading-relaxed">
+          {paymentNote}
+        </p>
+      ) : null}
     </div>
   );
 }

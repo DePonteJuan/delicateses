@@ -4,6 +4,15 @@ description: >-
   Aroma tropical y textura arenosa, hechas con coco rallado fresco. Perfectas
   para regalar o compartir.
 price: 6.5
+cookieSizing:
+  discriminant: true
+  value:
+    - label: 6 unidades
+      price: 6.5
+    - label: 12 unidades
+      price: 12
+    - label: 24 unidades
+      price: 22
 image: galletas-de-coco.svg
 available: true
 featured: false

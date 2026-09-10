@@ -9,33 +9,35 @@ export function formatPrice(amount: number) {
   }).format(amount);
 }
 
+function formatLineItem(item: CartItem) {
+  const sizePart = item.size ? ` (${item.size})` : '';
+
+  if (item.isCustomOrder) {
+    return `• ${item.qty}x ${item.name}${sizePart} — a cotizar según petición`;
+  }
+
+  return `• ${item.qty}x ${item.name}${sizePart} — ${formatPrice(item.price * item.qty)}`;
+}
+
 export function buildOrderMessage({
   greeting,
   items,
-  paymentNote,
 }: {
   greeting: string;
   items: CartItem[];
-  paymentNote: string;
 }) {
-  const lines = items.map(
-    (item) =>
-      `• ${item.qty}x ${item.name} — ${formatPrice(item.price * item.qty)}`,
-  );
+  const lines = items.map(formatLineItem);
+  const hasCustom = items.some((item) => item.isCustomOrder);
+  const pricedTotal = getCartTotal(items);
+  const totalLine = hasCustom
+    ? `Total catalogado: ${formatPrice(pricedTotal)} (+ encargo a cotizar)`
+    : `Total: ${formatPrice(pricedTotal)}`;
 
-  return [
-    greeting,
-    '',
-    ...lines,
-    '',
-    `Total: ${formatPrice(getCartTotal(items))}`,
-    '',
-    paymentNote,
-    '',
-    'Nombre:',
-    'Zona/entrega:',
-    'Notas:',
-  ].join('\n');
+  const footer = hasCustom
+    ? ['Nombre:', 'Zona/entrega:', 'Referencia del encargo:', 'Notas:']
+    : ['Nombre:', 'Zona/entrega:', 'Notas:'];
+
+  return [greeting, '', ...lines, '', totalLine, '', ...footer].join('\n');
 }
 
 export function buildWhatsAppUrl(phone: string, message: string) {

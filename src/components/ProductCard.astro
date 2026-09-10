@@ -1,6 +1,6 @@
 ---
 import type { Product } from '../lib/types';
-import { categoryLabels } from '../lib/types';
+import { categoryLabels, productDisplayPrice } from '../lib/types';
 import { formatPrice } from '../lib/format';
 import AddToCartButton from './AddToCartButton';
 
@@ -9,6 +9,14 @@ interface Props {
 }
 
 const { product } = Astro.props;
+
+const priceText = product.isCustomOrder
+  ? 'A cotizar'
+  : product.sizes.length > 0
+    ? `Desde ${formatPrice(productDisplayPrice(product))}`
+    : formatPrice(product.price);
+
+const needsOptions = product.isCustomOrder || product.sizes.length > 0;
 ---
 
 <article class="product-hover group">
@@ -22,8 +30,8 @@ const { product } = Astro.props;
       />
     </div>
   </a>
-  <p class="text-xs uppercase tracking-[0.18em] text-[var(--color-berry)] mb-2 font-semibold">
-    {categoryLabels[product.category]}
+  <p class="text-xs uppercase tracking-[0.18em] text-[var(--color-berry-deep)] mb-2 font-semibold">
+    {product.isCustomOrder ? 'A pedido' : categoryLabels[product.category]}
   </p>
   <h3 class="font-display italic text-2xl md:text-[1.7rem] text-[var(--color-cocoa)] mb-2 leading-tight">
     <a href={`/producto/${product.slug}`}>{product.name}</a>
@@ -31,18 +39,33 @@ const { product } = Astro.props;
   <p class="text-sm text-[var(--color-ink-soft)] line-clamp-2 mb-4 leading-relaxed">
     {product.description}
   </p>
-  <div class="flex items-center justify-between gap-3">
-    <span class="font-semibold text-[var(--color-cocoa)]">
-      {formatPrice(product.price)}
-    </span>
-    <AddToCartButton
-      client:load
-      slug={product.slug}
-      name={product.name}
-      price={product.price}
-      available={product.available}
-      className="btn-primary text-sm px-4 py-2"
-      label="Agregar"
-    />
-  </div>
+  {
+    needsOptions ? (
+      <AddToCartButton
+        client:load
+        slug={product.slug}
+        name={product.name}
+        price={product.price}
+        sizes={product.sizes}
+        isCustomOrder={product.isCustomOrder}
+        available={product.available}
+        className="btn-primary text-sm px-4 py-2 w-full"
+        compact
+      />
+    ) : (
+      <div class="flex items-center justify-between gap-3">
+        <span class="font-semibold text-[var(--color-cocoa)]">{priceText}</span>
+        <AddToCartButton
+          client:load
+          slug={product.slug}
+          name={product.name}
+          price={product.price}
+          available={product.available}
+          className="btn-primary text-sm px-4 py-2"
+          label="Agregar"
+          compact
+        />
+      </div>
+    )
+  }
 </article>

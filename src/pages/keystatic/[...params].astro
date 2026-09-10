@@ -1,0 +1,17 @@
+---
+import { KeystaticApp } from '../../components/KeystaticApp';
+
+export const prerender = false;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keystatic — Delicateses Doña Rosa</title>
+  </head>
+  <body>
+    <KeystaticApp client:only="react" />
+  </body>
+</html>

@@ -2,13 +2,16 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import AddToCartButton from '../../components/AddToCartButton';
 import { getAllProducts, getProduct } from '../../lib/reader';
-import { categoryLabels } from '../../lib/types';
+import { categoryLabels, CUSTOM_ORDER_SLUG } from '../../lib/types';
 import { formatPrice } from '../../lib/format';
+import { productDisplayPrice } from '../../lib/types';
 
 export async function getStaticPaths() {
   const products = await getAllProducts();
-  return products.map((product) => ({
-    params: { slug: product.slug },
+  const slugs = new Set(products.map((product) => product.slug));
+  slugs.add(CUSTOM_ORDER_SLUG);
+  return [...slugs].map((slug) => ({
+    params: { slug },
   }));
 }
 
@@ -18,6 +21,12 @@ const product = slug ? await getProduct(slug) : null;
 if (!product) {
   return Astro.redirect('/tienda');
 }
+
+const priceText = product.isCustomOrder
+  ? 'Precio según petición'
+  : product.sizes.length > 0
+    ? `Desde ${formatPrice(productDisplayPrice(product))}`
+    : formatPrice(product.price);
 ---
 
 <BaseLayout title={product.name} description={product.description}>
@@ -39,25 +48,27 @@ if (!product) {
       </div>
 
       <div class="lg:pt-4" data-reveal style="--reveal-delay: 100ms">
-        <p class="text-xs uppercase tracking-[0.2em] text-[var(--color-berry)] mb-3 font-semibold">
-          {categoryLabels[product.category]}
+        <p class="text-xs uppercase tracking-[0.2em] text-[var(--color-berry-deep)] mb-3 font-semibold">
+          {product.isCustomOrder ? 'A pedido' : categoryLabels[product.category]}
         </p>
         <h1 class="font-display italic text-[clamp(2rem,7vw,3.25rem)] text-[var(--color-cocoa)] mb-4 leading-tight">
           {product.name}
         </h1>
         <p class="text-xl sm:text-2xl font-semibold text-[var(--color-berry-deep)] mb-5 sm:mb-6">
-          {formatPrice(product.price)}
+          {priceText}
         </p>
         <p class="text-[var(--color-ink-soft)] leading-relaxed mb-7 sm:mb-8 max-w-lg text-sm sm:text-base">
           {product.description}
         </p>
 
-        <div class="flex flex-col xs:flex-row flex-wrap gap-3">
+        <div class="flex flex-col gap-3 max-w-md">
           <AddToCartButton
             client:load
             slug={product.slug}
             name={product.name}
             price={product.price}
+            sizes={product.sizes}
+            isCustomOrder={product.isCustomOrder}
             available={product.available}
             className="btn-primary px-7 py-3.5 w-full xs:w-auto"
           />

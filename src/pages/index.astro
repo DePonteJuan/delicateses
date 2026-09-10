@@ -4,8 +4,12 @@ import ProductCard from '../components/ProductCard.astro';
 import { getAllProducts } from '../lib/reader';
 
 const products = await getAllProducts();
-const featured = products.filter((p) => p.featured && p.available).slice(0, 3);
-const showcase = featured.length > 0 ? featured : products.filter((p) => p.available).slice(0, 3);
+const catalog = products.filter((p) => !p.isCustomOrder);
+const featured = catalog.filter((p) => p.featured && p.available).slice(0, 3);
+const showcase =
+  featured.length > 0
+    ? featured
+    : catalog.filter((p) => p.available).slice(0, 3);
 ---
 
 <BaseLayout description="Delicateses Doña Rosa — galletas, tortas y postres artesanales. Arma tu pedido y confírmalo por WhatsApp.">

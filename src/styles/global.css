@@ -7,14 +7,14 @@
 
   --color-ink: #3a2420;
   --color-ink-soft: #6b4a44;
-  --color-berry: #c94b6a;
-  --color-berry-deep: #a33854;
-  --color-frost: #f7d6de;
-  --color-mousse: #ffe8ee;
+  --color-berry: #e3c2a7;
+  --color-berry-deep: #a67c52;
+  --color-frost: #f0dcc8;
+  --color-mousse: #faf0e6;
   --color-vanilla: #fffaf5;
   --color-pistachio: #c5d4b8;
   --color-cocoa: #4a2f2a;
-  --color-sugar: #fff5f7;
+  --color-sugar: #fff8f2;
 }
 
 @layer base {
@@ -27,10 +27,10 @@
     color: var(--color-ink);
     background-color: var(--color-vanilla);
     background-image:
-      radial-gradient(ellipse 70% 55% at 0% 0%, rgba(247, 214, 222, 0.85), transparent 55%),
+      radial-gradient(ellipse 70% 55% at 0% 0%, rgba(227, 194, 167, 0.55), transparent 55%),
       radial-gradient(ellipse 55% 45% at 100% 5%, rgba(197, 212, 184, 0.35), transparent 50%),
-      radial-gradient(ellipse 50% 40% at 80% 90%, rgba(255, 232, 238, 0.7), transparent 55%),
-      linear-gradient(180deg, #fffaf5 0%, #fff5f7 40%, #ffeef2 100%);
+      radial-gradient(ellipse 50% 40% at 80% 90%, rgba(240, 220, 200, 0.65), transparent 55%),
+      linear-gradient(180deg, #fffaf5 0%, #fff8f2 40%, #f5ebe0 100%);
     min-height: 100vh;
     overflow-x: clip;
   }
@@ -54,7 +54,7 @@
   .frosting-mesh {
     background-image:
       radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.55) 0 2px, transparent 2.5px),
-      radial-gradient(circle at 72% 48%, rgba(201, 75, 106, 0.08) 0 1.5px, transparent 2px),
+      radial-gradient(circle at 72% 48%, rgba(166, 124, 82, 0.1) 0 1.5px, transparent 2px),
       radial-gradient(circle at 40% 78%, rgba(197, 212, 184, 0.18) 0 2px, transparent 2.5px);
     background-size: 28px 28px, 22px 22px, 34px 34px;
   }
@@ -67,20 +67,22 @@
 
   .btn-primary {
     background: var(--color-berry);
-    color: white;
+    color: var(--color-cocoa);
     border-radius: 0.9rem;
     font-weight: 600;
     letter-spacing: 0.01em;
     transition:
       background 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.3s ease,
       transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
       box-shadow 0.3s ease;
   }
 
   .btn-primary:hover {
     background: var(--color-berry-deep);
+    color: #fffaf5;
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(201, 75, 106, 0.28);
+    box-shadow: 0 12px 28px rgba(166, 124, 82, 0.28);
   }
 
   .btn-primary:active {
@@ -143,8 +145,8 @@
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(115deg, rgba(255, 250, 245, 0.82) 0%, rgba(255, 232, 238, 0.45) 42%, rgba(232, 240, 225, 0.2) 100%),
-      linear-gradient(to top, rgba(255, 245, 247, 0.55) 0%, transparent 42%);
+      linear-gradient(115deg, rgba(255, 250, 245, 0.82) 0%, rgba(227, 194, 167, 0.4) 42%, rgba(232, 240, 225, 0.2) 100%),
+      linear-gradient(to top, rgba(255, 248, 242, 0.55) 0%, transparent 42%);
     animation: veil-in 1.2s ease both;
   }
 
@@ -159,7 +161,7 @@
   .hero-blob-a {
     width: clamp(7rem, 22vw, 14rem);
     height: clamp(7rem, 22vw, 14rem);
-    background: rgba(255, 245, 247, 0.35);
+    background: rgba(255, 248, 242, 0.4);
     top: 12%;
     right: 8%;
     animation: float-soft 7s ease-in-out infinite;
@@ -177,7 +179,7 @@
   .hero-blob-c {
     width: clamp(4rem, 12vw, 8rem);
     height: clamp(4rem, 12vw, 8rem);
-    background: rgba(232, 122, 138, 0.28);
+    background: rgba(166, 124, 82, 0.22);
     top: 28%;
     right: 30%;
     animation: float-soft 6.5s ease-in-out 0.4s infinite;

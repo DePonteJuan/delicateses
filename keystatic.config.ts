@@ -1,11 +1,13 @@
 import { config, fields, collection, singleton } from '@keystatic/core';
 
-const repoOwner =
-  import.meta.env.PUBLIC_KEYSTATIC_GITHUB_REPO_OWNER ||
-  process.env.PUBLIC_KEYSTATIC_GITHUB_REPO_OWNER;
-const repoName =
-  import.meta.env.PUBLIC_KEYSTATIC_GITHUB_REPO_NAME ||
-  process.env.PUBLIC_KEYSTATIC_GITHUB_REPO_NAME;
+// Solo import.meta.env: este archivo también se evalúa en el browser.
+// Referenciar process.env sin guard rompe /keystatic (pantalla en blanco).
+const repoOwner = String(
+  import.meta.env.PUBLIC_KEYSTATIC_GITHUB_REPO_OWNER ?? '',
+).trim();
+const repoName = String(
+  import.meta.env.PUBLIC_KEYSTATIC_GITHUB_REPO_NAME ?? '',
+).trim();
 
 const storage =
   repoOwner && repoName
@@ -42,8 +44,41 @@ export default config({
         }),
         price: fields.number({
           label: 'Precio (USD)',
+          description:
+            'Para galletas con tamaños, este valor se usa como respaldo. El precio real lo define cada tamaño.',
           validation: { isRequired: true },
         }),
+        cookieSizing: fields.conditional(
+          fields.checkbox({
+            label: 'Definir tamaños (solo galletas)',
+            description:
+              'Activa únicamente si la categoría es Galletas. Cada tamaño tiene su propio precio.',
+            defaultValue: false,
+          }),
+          {
+            false: fields.empty(),
+            true: fields.array(
+              fields.object({
+                label: fields.text({
+                  label: 'Tamaño',
+                  validation: { isRequired: true },
+                }),
+                price: fields.number({
+                  label: 'Precio (USD)',
+                  validation: { isRequired: true },
+                }),
+              }),
+              {
+                label: 'Tamaños y precios',
+                itemLabel: (props) => {
+                  const size = props.fields.label.value || 'Tamaño';
+                  const price = props.fields.price.value;
+                  return price == null ? size : `${size} — $${price}`;
+                },
+              },
+            ),
+          },
+        ),
         image: fields.image({
           label: 'Imagen',
           directory: 'public/images/products',
@@ -72,7 +107,9 @@ export default config({
             'Ejemplo: 584121234567. Si está vacío, se usa PUBLIC_WHATSAPP_NUMBER.',
         }),
         paymentNote: fields.text({
-          label: 'Métodos de pago / delivery',
+          label: 'Métodos de pago / delivery (solo en la web)',
+          description:
+            'Se muestra en la página del carrito. Ya no se incluye en el mensaje de WhatsApp.',
           multiline: true,
           defaultValue:
             'Pago móvil, transferencia o efectivo al entregar. Coordinamos zona y horario por WhatsApp.',
