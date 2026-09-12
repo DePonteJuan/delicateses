@@ -1,0 +1,11 @@
+name: "Cupcake de melocotón"
+category: "postres"
+description: >-
+  Cupcake esponjoso con toque de melocotón.
+price: 1
+cookieSizing:
+  discriminant: false
+  value: null
+image: "cupcake-de-melocoton.jpg"
+available: true
+featured: false

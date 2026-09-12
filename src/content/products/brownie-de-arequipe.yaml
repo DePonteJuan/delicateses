@@ -1,0 +1,11 @@
+name: "Brownie de arequipe"
+category: "postres"
+description: >-
+  Brownie húmedo con arequipe.
+price: 1
+cookieSizing:
+  discriminant: false
+  value: null
+image: "brownie-de-arequipe.jpg"
+available: true
+featured: false

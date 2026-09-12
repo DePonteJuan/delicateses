@@ -1,0 +1,11 @@
+name: "Cupcake de vainilla con topper"
+category: "postres"
+description: >-
+  Vainilla con decoración y topper. Ideal para fiestas.
+price: 1
+cookieSizing:
+  discriminant: false
+  value: null
+image: "cupcake-de-vainilla-con-topper.jpg"
+available: true
+featured: false

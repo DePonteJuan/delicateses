@@ -7,7 +7,7 @@ export function formatPrice(amount: number) {
 }
 
 export function resolveProductImage(image: string | null | undefined) {
-  if (!image) return '/images/products/galletas-de-avena.svg';
+  if (!image) return '/images/products/galleta-de-miel.jpg';
   if (image.startsWith('/')) return image;
   if (image.startsWith('http')) return image;
   return `/images/products/${image}`;

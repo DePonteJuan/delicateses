@@ -6,26 +6,34 @@ export type CartItem = {
   qty: number;
   size?: string;
   isCustomOrder?: boolean;
+  /** Referencia elegida de la galería de encargos */
+  customReference?: string;
 };
 
 export const CART_STORAGE_KEY = 'dona-rosa-cart';
 export const CART_EVENT = 'dona-rosa-cart-change';
 
-export function cartItemId(slug: string, size?: string) {
+export function cartItemId(slug: string, size?: string, customReference?: string) {
+  if (customReference) return `${slug}::ref::${customReference}`;
   return size ? `${slug}::${size}` : slug;
 }
 
 function normalizeCartItem(raw: Partial<CartItem> & { slug: string }): CartItem | null {
   if (!raw.slug || typeof raw.name !== 'string') return null;
   const size = typeof raw.size === 'string' && raw.size ? raw.size : undefined;
+  const customReference =
+    typeof raw.customReference === 'string' && raw.customReference
+      ? raw.customReference
+      : undefined;
   return {
-    id: raw.id || cartItemId(raw.slug, size),
+    id: raw.id || cartItemId(raw.slug, size, customReference),
     slug: raw.slug,
     name: raw.name,
     price: typeof raw.price === 'number' ? raw.price : 0,
     qty: typeof raw.qty === 'number' && raw.qty > 0 ? raw.qty : 1,
     size,
     isCustomOrder: Boolean(raw.isCustomOrder),
+    customReference,
   };
 }
 
@@ -67,7 +75,7 @@ export function addToCart(
   qty = 1,
 ) {
   const cart = readCart();
-  const id = item.id || cartItemId(item.slug, item.size);
+  const id = item.id || cartItemId(item.slug, item.size, item.customReference);
   const existing = cart.find((entry) => entry.id === id);
   if (existing) {
     existing.qty += qty;
@@ -80,6 +88,7 @@ export function addToCart(
       qty,
       size: item.size,
       isCustomOrder: item.isCustomOrder,
+      customReference: item.customReference,
     });
   }
   writeCart(cart);

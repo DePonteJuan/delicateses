@@ -1,0 +1,11 @@
+name: "Mus de fresa"
+category: "postres"
+description: >-
+  Mousse ligera de fresa en porción individual.
+price: 1
+cookieSizing:
+  discriminant: false
+  value: null
+image: "mus-de-fresa.jpg"
+available: true
+featured: false

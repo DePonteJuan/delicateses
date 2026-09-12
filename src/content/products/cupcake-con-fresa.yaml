@@ -1,0 +1,11 @@
+name: "Cupcake con fresa"
+category: "postres"
+description: >-
+  Cupcake decorado con fresa. Fresco y colorido.
+price: 1
+cookieSizing:
+  discriminant: false
+  value: null
+image: "cupcake-con-fresa.jpg"
+available: true
+featured: false

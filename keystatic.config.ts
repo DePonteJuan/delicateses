@@ -50,9 +50,9 @@ export default config({
         }),
         cookieSizing: fields.conditional(
           fields.checkbox({
-            label: 'Definir tamaños (solo galletas)',
+            label: 'Definir tamaños y precios',
             description:
-              'Activa únicamente si la categoría es Galletas. Cada tamaño tiene su propio precio.',
+              'Úsalo en galletas (por peso) o tortas con varios tamaños. Cada tamaño tiene su propio precio.',
             defaultValue: false,
           }),
           {

@@ -1,0 +1,11 @@
+name: "Mini marquesa"
+category: "postres"
+description: >-
+  Marquesa cremosa en porción personal.
+price: 1
+cookieSizing:
+  discriminant: false
+  value: null
+image: "mini-marquesa.jpg"
+available: true
+featured: false

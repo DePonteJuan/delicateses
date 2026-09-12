@@ -1,0 +1,11 @@
+name: "Mus de parchita"
+category: "postres"
+description: >-
+  Mousse de parchita con acidez equilibrada. Porción generosa.
+price: 10
+cookieSizing:
+  discriminant: false
+  value: null
+image: "mus-de-parchita.jpg"
+available: true
+featured: false

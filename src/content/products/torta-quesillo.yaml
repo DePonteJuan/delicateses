@@ -1,0 +1,11 @@
+name: "Torta quesillo"
+category: "postres"
+description: >-
+  Quesillo en formato torta para compartir en familia.
+price: 15
+cookieSizing:
+  discriminant: false
+  value: null
+image: "torta-quesillo.jpg"
+available: true
+featured: false

@@ -1,11 +1,11 @@
-name: "Torta de chocolate"
+name: "Torta de piña"
 category: "tortas"
 description: >-
-  Chocolate intenso en capas. Un clásico que nunca falla.
+  Sabor tropical a piña en bizcocho esponjoso. Ideal para reuniones.
 price: 16
 cookieSizing:
   discriminant: false
   value: null
-image: "torta-de-chocolate.jpg"
+image: "torta-de-pina.jpg"
 available: true
 featured: false

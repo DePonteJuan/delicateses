@@ -1,0 +1,11 @@
+name: "Torta de fresa con decorado de almendra"
+category: "tortas"
+description: >-
+  Fresa y almendra en un solo pastel. Dulce y con buena presencia.
+price: 16
+cookieSizing:
+  discriminant: false
+  value: null
+image: "torta-de-fresa-con-decorado-de-almendra.jpg"
+available: true
+featured: false

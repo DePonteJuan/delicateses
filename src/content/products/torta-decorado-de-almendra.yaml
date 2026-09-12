@@ -1,0 +1,11 @@
+name: "Torta decorado de almendra"
+category: "tortas"
+description: >-
+  Cobertura elegante con almendras. Presentación lista para la mesa.
+price: 16
+cookieSizing:
+  discriminant: false
+  value: null
+image: "torta-decorado-de-almendra.jpg"
+available: true
+featured: false

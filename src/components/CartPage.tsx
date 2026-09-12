@@ -93,9 +93,16 @@ export default function CartPage({
                   </span>
                 ) : null}
               </p>
+              {item.customReference ? (
+                <p className="text-sm text-[var(--color-ink-soft)]">
+                  Referencia: {item.customReference}
+                </p>
+              ) : null}
               <p className="text-sm text-[var(--color-ink-soft)]">
                 {item.isCustomOrder
-                  ? 'Precio según petición'
+                  ? item.price > 0
+                    ? `Orientativo ${formatPrice(item.price)} · a cotizar`
+                    : 'Precio según petición'
                   : `${formatPrice(item.price)} c/u`}
               </p>
             </div>

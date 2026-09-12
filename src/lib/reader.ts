@@ -17,13 +17,11 @@ export function getReader() {
 }
 
 function mapSizes(
-  category: ProductCategory,
   cookieSizing: {
     discriminant: boolean;
     value: { label: string; price: number | null }[] | null;
   } | null | undefined,
 ): ProductSize[] {
-  if (category !== 'galletas') return [];
   if (!cookieSizing?.discriminant || !cookieSizing.value) return [];
 
   return cookieSizing.value
@@ -51,7 +49,7 @@ function mapProduct(
   },
 ): Product {
   const category = entry.category as ProductCategory;
-  const sizes = mapSizes(category, entry.cookieSizing);
+  const sizes = mapSizes(entry.cookieSizing);
 
   return {
     slug,

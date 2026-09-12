@@ -1,0 +1,11 @@
+name: "Minitortas"
+category: "postres"
+description: >-
+  Minitortas individuales, ideales para picar o fiestas.
+price: 1
+cookieSizing:
+  discriminant: false
+  value: null
+image: "minitortas-pequenas.jpg"
+available: true
+featured: false

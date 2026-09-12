@@ -1,0 +1,11 @@
+name: "Torta de crema con melocotón"
+category: "tortas"
+description: >-
+  Crema ligera con melocotón. Fresca y perfecta para compartir.
+price: 16
+cookieSizing:
+  discriminant: false
+  value: null
+image: "torta-de-crema-con-melocoton.jpg"
+available: true
+featured: false

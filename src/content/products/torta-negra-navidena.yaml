@@ -1,0 +1,17 @@
+name: "Torta negra navideña"
+category: "tortas"
+description: >-
+  Bizcocho oscuro con especias de temporada. Disponible en tres tamaños para tu celebración.
+price: 5
+cookieSizing:
+  discriminant: true
+  value:
+    - label: "Pequeña"
+      price: 5
+    - label: "Mediana"
+      price: 10
+    - label: "Grande"
+      price: 15
+image: "torta-negra-navidena.jpg"
+available: true
+featured: true

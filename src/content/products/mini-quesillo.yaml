@@ -1,0 +1,11 @@
+name: "Mini quesillo"
+category: "postres"
+description: >-
+  Porción individual de quesillo casero, suave y caramelizado.
+price: 1
+cookieSizing:
+  discriminant: false
+  value: null
+image: "mini-quesillo.jpg"
+available: true
+featured: false

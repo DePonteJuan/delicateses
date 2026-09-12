@@ -1,0 +1,11 @@
+name: "Cupcakes de vainilla"
+category: "postres"
+description: >-
+  Cupcakes de vainilla clásicos, listos para servir.
+price: 1
+cookieSizing:
+  discriminant: false
+  value: null
+image: "cupcakes-de-vainilla.jpg"
+available: true
+featured: false

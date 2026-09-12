@@ -1,0 +1,11 @@
+name: "Minitorta de chocolate con dandy"
+category: "postres"
+description: >-
+  Minitorta de chocolate con cobertura de dandy. Extra pequeña.
+price: 5
+cookieSizing:
+  discriminant: false
+  value: null
+image: "minitorta-de-chocolate-con-dandy.jpg"
+available: true
+featured: false

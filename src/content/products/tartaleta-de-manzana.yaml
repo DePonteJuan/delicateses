@@ -1,0 +1,11 @@
+name: "Tartaleta de manzana"
+category: "postres"
+description: >-
+  Masa crujiente con relleno de manzana. Un postre clásico.
+price: 10
+cookieSizing:
+  discriminant: false
+  value: null
+image: "tartaleta-de-manzana.jpg"
+available: true
+featured: false

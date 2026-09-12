@@ -1,0 +1,11 @@
+name: "Cupcake de crema rosada"
+category: "postres"
+description: >-
+  Cobertura de crema rosada. Perfecto para celebraciones.
+price: 1
+cookieSizing:
+  discriminant: false
+  value: null
+image: "cupcake-de-crema-rosada.jpg"
+available: true
+featured: false

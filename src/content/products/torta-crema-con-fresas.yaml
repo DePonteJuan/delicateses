@@ -1,0 +1,11 @@
+name: "Torta crema con fresas"
+category: "tortas"
+description: >-
+  Bizcocho suave con crema y fresas frescas. Ideal para cumpleaños y meriendas.
+price: 16
+cookieSizing:
+  discriminant: false
+  value: null
+image: "torta-crema-con-fresas.jpg"
+available: true
+featured: false

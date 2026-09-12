@@ -13,7 +13,14 @@ function formatLineItem(item: CartItem) {
   const sizePart = item.size ? ` (${item.size})` : '';
 
   if (item.isCustomOrder) {
-    return `• ${item.qty}x ${item.name}${sizePart} — a cotizar según petición`;
+    const ref = item.customReference
+      ? ` — referencia: ${item.customReference}`
+      : '';
+    const guide =
+      item.price > 0
+        ? ` (precio orientativo ${formatPrice(item.price)})`
+        : '';
+    return `• ${item.qty}x Encargo personalizado${ref}${guide} — a cotizar`;
   }
 
   return `• ${item.qty}x ${item.name}${sizePart} — ${formatPrice(item.price * item.qty)}`;

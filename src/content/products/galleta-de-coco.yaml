@@ -1,7 +1,7 @@
-name: "Galletas de naranja"
+name: "Galleta de coco"
 category: "galletas"
 description: >-
-  Toque cítrico fresco en cada bocado. Ideales para la tarde.
+  Aroma a coco rallado y textura crujiente. Perfectas para compartir o regalar.
 price: 5
 cookieSizing:
   discriminant: true
@@ -12,6 +12,6 @@ cookieSizing:
       price: 10
     - label: "1 kilo"
       price: 20
-image: "galletas-de-naranja.jpg"
+image: "galleta-de-coco.jpg"
 available: true
-featured: false
+featured: true

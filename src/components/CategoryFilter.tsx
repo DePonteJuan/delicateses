@@ -1,8 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import type { Product, ProductCategory } from '../lib/types';
 import { categoryLabels, productDisplayPrice } from '../lib/types';
+import { customOrderExamples } from '../lib/customOrders';
 import { formatPrice } from '../lib/format';
+import { addToCart } from '../lib/cart';
 import AddToCartButton from './AddToCartButton';
+
+type ShopFilter = 'todas' | ProductCategory | 'encargos';
 
 type Props = {
   products: Product[];
@@ -10,12 +14,21 @@ type Props = {
   initialQuery?: string;
 };
 
-const filters: Array<'todas' | ProductCategory> = [
+const filters: ShopFilter[] = [
   'todas',
   'galletas',
   'tortas',
   'postres',
+  'encargos',
 ];
+
+const filterLabels: Record<ShopFilter, string> = {
+  todas: 'Todas',
+  galletas: 'Galletas',
+  tortas: 'Tortas',
+  postres: 'Postres',
+  encargos: 'Encargos',
+};
 
 function normalize(value: string) {
   return value
@@ -33,44 +46,251 @@ function priceLabel(product: Product) {
   return formatPrice(product.price);
 }
 
+function ProductTile({
+  product,
+  dense = false,
+}: {
+  product: Product;
+  dense?: boolean;
+}) {
+  const needsOptions = product.isCustomOrder || product.sizes.length > 0;
+
+  return (
+    <article className="product-hover group">
+      <a href={`/producto/${product.slug}`} className="block mb-3">
+        <div
+          className={`media-frame ${dense ? 'aspect-square' : 'aspect-[4/5] sm:aspect-[4/3]'}`}
+        >
+          <img
+            src={product.image ?? '/images/products/galleta-de-miel.jpg'}
+            alt={product.name}
+            className="w-full h-full object-cover transition-transform duration-500"
+            loading="lazy"
+          />
+        </div>
+      </a>
+      <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.16em] text-[var(--color-berry-deep)] mb-1.5 font-semibold">
+        {categoryLabels[product.category]}
+      </p>
+      <h2
+        className={`font-display italic text-[var(--color-cocoa)] mb-1 leading-tight ${
+          dense ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl'
+        }`}
+      >
+        <a href={`/producto/${product.slug}`}>{product.name}</a>
+      </h2>
+      {!dense && product.description ? (
+        <p className="text-sm text-[var(--color-ink-soft)] line-clamp-2 mb-3 leading-relaxed">
+          {product.description}
+        </p>
+      ) : (
+        <p className="mb-3 font-semibold text-[var(--color-cocoa)] text-sm sm:text-base">
+          {priceLabel(product)}
+        </p>
+      )}
+      {needsOptions ? (
+        <AddToCartButton
+          slug={product.slug}
+          name={product.name}
+          price={product.price}
+          sizes={product.sizes}
+          isCustomOrder={product.isCustomOrder}
+          available={product.available}
+          className="btn-primary text-sm px-4 py-2 w-full"
+          compact
+        />
+      ) : (
+        <div className="flex items-center justify-between gap-2">
+          {!dense ? (
+            <span className="font-semibold text-[var(--color-cocoa)]">
+              {priceLabel(product)}
+            </span>
+          ) : (
+            <span />
+          )}
+          <AddToCartButton
+            slug={product.slug}
+            name={product.name}
+            price={product.price}
+            available={product.available}
+            className="btn-primary text-sm px-3 py-2"
+            label="Agregar"
+            compact
+          />
+        </div>
+      )}
+    </article>
+  );
+}
+
+function Section({
+  title,
+  subtitle,
+  children,
+  gridClass,
+}: {
+  title: string;
+  subtitle?: string;
+  children: ReactNode;
+  gridClass: string;
+}) {
+  return (
+    <section className="mb-12 sm:mb-16">
+      <div className="mb-5 sm:mb-6">
+        <h2 className="font-display italic text-3xl sm:text-4xl text-[var(--color-cocoa)]">
+          {title}
+        </h2>
+        {subtitle ? (
+          <p className="mt-1 text-sm text-[var(--color-ink-soft)]">{subtitle}</p>
+        ) : null}
+      </div>
+      <div className={gridClass}>{children}</div>
+    </section>
+  );
+}
+
+function EncargosGallery({ query }: { query: string }) {
+  const [addedId, setAddedId] = useState<string | null>(null);
+
+  const examples = useMemo(() => {
+    const needle = normalize(query);
+    if (!needle) return customOrderExamples;
+    return customOrderExamples.filter((ex) =>
+      normalize(`${ex.name} encargo personalizado`).includes(needle),
+    );
+  }, [query]);
+
+  if (examples.length === 0) {
+    return (
+      <p className="text-[var(--color-ink-soft)] text-sm">
+        No hay referencias que coincidan con la búsqueda.
+      </p>
+    );
+  }
+
+  return (
+    <section className="mb-12 sm:mb-16">
+      <div className="mb-5 sm:mb-6 max-w-2xl">
+        <p className="text-xs uppercase tracking-[0.18em] text-[var(--color-berry-deep)] mb-2 font-semibold">
+          A pedido
+        </p>
+        <h2 className="font-display italic text-3xl sm:text-4xl text-[var(--color-cocoa)] mb-2">
+          Encargos personalizados
+        </h2>
+        <p className="text-sm text-[var(--color-ink-soft)] leading-relaxed">
+          Elige una referencia con su precio orientativo. Confirmamos el valor
+          final según tamaño y detalles por WhatsApp.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
+        {examples.map((ex) => (
+          <article
+            key={ex.id}
+            className="rounded-2xl overflow-hidden bg-white/60 border border-[var(--color-berry)]/10"
+          >
+            <div className="media-frame aspect-square rounded-none">
+              <img
+                src={ex.image}
+                alt={ex.name}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div className="p-3 sm:p-3.5">
+              <h3 className="font-display italic text-base sm:text-lg text-[var(--color-cocoa)] leading-snug mb-1">
+                {ex.name}
+              </h3>
+              <p className="text-sm font-semibold text-[var(--color-berry-deep)] mb-3">
+                Desde {formatPrice(ex.price)}
+              </p>
+              <button
+                type="button"
+                className="btn-primary w-full text-xs sm:text-sm px-3 py-2"
+                onClick={() => {
+                  addToCart({
+                    slug: 'encargo-personalizado',
+                    name: 'Encargo personalizado',
+                    price: ex.price,
+                    isCustomOrder: true,
+                    customReference: `${ex.name} (${formatPrice(ex.price)})`,
+                  });
+                  setAddedId(ex.id);
+                  window.setTimeout(() => setAddedId(null), 1400);
+                }}
+              >
+                {addedId === ex.id ? 'Agregado ✓' : 'Pedir esta referencia'}
+              </button>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default function CategoryFilter({
   products,
   initialCategory,
   initialQuery = '',
 }: Props) {
-  const start =
-    initialCategory && filters.includes(initialCategory as ProductCategory)
-      ? (initialCategory as ProductCategory | 'todas')
+  const start: ShopFilter =
+    initialCategory && filters.includes(initialCategory as ShopFilter)
+      ? (initialCategory as ShopFilter)
       : 'todas';
-  const [active, setActive] = useState<'todas' | ProductCategory>(start);
+  const [active, setActive] = useState<ShopFilter>(start);
   const [query, setQuery] = useState(initialQuery);
 
-  const filtered = useMemo(() => {
-    const available = products.filter((p) => p.available);
-    const custom = available.filter((p) => p.isCustomOrder);
-    const catalog = available.filter((p) => !p.isCustomOrder);
+  const available = useMemo(
+    () => products.filter((p) => p.available && !p.isCustomOrder),
+    [products],
+  );
 
-    const byCategory =
-      active === 'todas'
-        ? catalog
-        : catalog.filter((p) => p.category === active);
-
+  const matchesQuery = (product: Product) => {
     const needle = normalize(query);
-    const matchesQuery = (product: Product) => {
-      if (!needle) return true;
-      const haystack = normalize(
-        [
-          product.name,
-          product.description,
-          categoryLabels[product.category],
-        ].join(' '),
-      );
-      return haystack.includes(needle);
-    };
+    if (!needle) return true;
+    return normalize(
+      [product.name, product.description, categoryLabels[product.category]].join(
+        ' ',
+      ),
+    ).includes(needle);
+  };
 
-    const customVisible = custom.filter(matchesQuery);
-    return [...customVisible, ...byCategory.filter(matchesQuery)];
-  }, [active, products, query]);
+  const galletas = available.filter(
+    (p) => p.category === 'galletas' && matchesQuery(p),
+  );
+  const tortas = available.filter(
+    (p) => p.category === 'tortas' && matchesQuery(p),
+  );
+  const postres = available.filter(
+    (p) => p.category === 'postres' && matchesQuery(p),
+  );
+
+  const showEncargos = active === 'todas' || active === 'encargos';
+  const showGalletas =
+    (active === 'todas' || active === 'galletas') && galletas.length > 0;
+  const showTortas =
+    (active === 'todas' || active === 'tortas') && tortas.length > 0;
+  const showPostres =
+    (active === 'todas' || active === 'postres') && postres.length > 0;
+
+  const empty =
+    !showEncargos && !showGalletas && !showTortas && !showPostres
+      ? false
+      : active === 'encargos'
+        ? false
+        : !showGalletas &&
+          !showTortas &&
+          !showPostres &&
+          active !== 'todas' &&
+          active !== 'encargos';
+
+  const nothingVisible =
+    !showEncargos &&
+    !showGalletas &&
+    !showTortas &&
+    !showPostres &&
+    active !== 'encargos';
 
   return (
     <div>
@@ -102,7 +322,7 @@ export default function CategoryFilter({
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar galletas, tortas, postres..."
+            placeholder="Buscar por nombre o categoría..."
             autoComplete="off"
             className="w-full rounded-2xl border border-[var(--color-berry)]/15 bg-white/80 pl-11 pr-4 py-3 text-sm sm:text-base text-[var(--color-cocoa)] placeholder:text-[var(--color-ink-soft)]/70 outline-none transition focus:border-[var(--color-berry)]/40 focus:bg-white focus:ring-2 focus:ring-[var(--color-frost)]"
           />
@@ -111,7 +331,6 @@ export default function CategoryFilter({
 
       <div className="flex flex-wrap gap-2 mb-8 sm:mb-10">
         {filters.map((filter) => {
-          const label = filter === 'todas' ? 'Todas' : categoryLabels[filter];
           const isActive = active === filter;
           return (
             <button
@@ -124,81 +343,58 @@ export default function CategoryFilter({
                   : 'bg-white/70 text-[var(--color-ink-soft)] hover:bg-[var(--color-mousse)]'
               }`}
             >
-              {label}
+              {filterLabels[filter]}
             </button>
           );
         })}
       </div>
 
-      {filtered.length === 0 ? (
+      {nothingVisible || empty ? (
         <p className="text-[var(--color-ink-soft)] text-sm sm:text-base">
           {query.trim()
             ? `No encontramos resultados para “${query.trim()}”.`
             : 'No hay productos en esta categoría por ahora.'}
         </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 sm:gap-x-8 gap-y-10 sm:gap-y-12">
-          {filtered.map((product) => {
-            const needsOptions =
-              product.isCustomOrder || product.sizes.length > 0;
+        <>
+          {showEncargos ? <EncargosGallery query={query} /> : null}
 
-            return (
-              <article key={product.slug} className="product-hover group">
-                <a href={`/producto/${product.slug}`} className="block mb-4">
-                  <div className="media-frame aspect-[4/3]">
-                    <img
-                      src={
-                        product.image ??
-                        '/images/products/galletas-de-avena.svg'
-                      }
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-500"
-                      loading="lazy"
-                    />
-                  </div>
-                </a>
-                <p className="text-xs uppercase tracking-[0.18em] text-[var(--color-berry-deep)] mb-2 font-semibold">
-                  {product.isCustomOrder
-                    ? 'A pedido'
-                    : categoryLabels[product.category]}
-                </p>
-                <h2 className="font-display italic text-2xl md:text-[1.7rem] text-[var(--color-cocoa)] mb-2 leading-tight">
-                  <a href={`/producto/${product.slug}`}>{product.name}</a>
-                </h2>
-                <p className="text-sm text-[var(--color-ink-soft)] line-clamp-2 mb-4 leading-relaxed">
-                  {product.description}
-                </p>
-                {needsOptions ? (
-                  <AddToCartButton
-                    slug={product.slug}
-                    name={product.name}
-                    price={product.price}
-                    sizes={product.sizes}
-                    isCustomOrder={product.isCustomOrder}
-                    available={product.available}
-                    className="btn-primary text-sm px-4 py-2 w-full"
-                    compact
-                  />
-                ) : (
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-semibold text-[var(--color-cocoa)]">
-                      {priceLabel(product)}
-                    </span>
-                    <AddToCartButton
-                      slug={product.slug}
-                      name={product.name}
-                      price={product.price}
-                      available={product.available}
-                      className="btn-primary text-sm px-4 py-2"
-                      label="Agregar"
-                      compact
-                    />
-                  </div>
-                )}
-              </article>
-            );
-          })}
-        </div>
+          {showGalletas ? (
+            <Section
+              title="Galletas"
+              subtitle="Por 1/4, 1/2 o 1 kilo"
+              gridClass="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8"
+            >
+              {galletas.map((p) => (
+                <ProductTile key={p.slug} product={p} />
+              ))}
+            </Section>
+          ) : null}
+
+          {showTortas ? (
+            <Section
+              title="Tortas"
+              subtitle="Listas para celebrar"
+              gridClass="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+            >
+              {tortas.map((p) => (
+                <ProductTile key={p.slug} product={p} />
+              ))}
+            </Section>
+          ) : null}
+
+          {showPostres ? (
+            <Section
+              title="Postres"
+              subtitle="Minis y especiales"
+              gridClass="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+            >
+              {postres.map((p) => (
+                <ProductTile key={p.slug} product={p} dense />
+              ))}
+            </Section>
+          ) : null}
+        </>
       )}
     </div>
   );

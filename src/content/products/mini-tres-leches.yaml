@@ -1,0 +1,11 @@
+name: "Mini tres leches"
+category: "postres"
+description: >-
+  Bizcocho empapado en tres leches, tamaño individual.
+price: 1
+cookieSizing:
+  discriminant: false
+  value: null
+image: "mini-tres-leches.jpg"
+available: true
+featured: false
