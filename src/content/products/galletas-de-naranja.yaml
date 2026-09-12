@@ -1,8 +1,8 @@
-name: Galletas de chocolate
+name: Galletas de naranja
 category: galletas
 description: >-
-  Galletas suaves con chips de chocolate semiamargo. Un clásico que nunca falla
-  en la merienda.
+  Galletas suaves con ralladura de naranja. Un clásico que nunca falla en la
+  merienda.
 price: 7
 cookieSizing:
   discriminant: true
@@ -13,6 +13,6 @@ cookieSizing:
       price: 13
     - label: 24 unidades
       price: 24
-image: galletas-de-chocolate.svg
+image: /images/products/galletas-de-naranja/image.jpg
 available: true
 featured: false
