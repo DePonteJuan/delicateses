@@ -1,9 +1,12 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import type { Product, ProductCategory } from '../lib/types';
 import { categoryLabels, productDisplayPrice } from '../lib/types';
-import { customOrderExamples } from '../lib/customOrders';
+import {
+  customOrderExamples,
+  customOrderSlug,
+} from '../lib/customOrders';
+import { CUSTOM_ORDER_SLUG } from '../lib/types';
 import { formatPrice } from '../lib/format';
-import { addToCart } from '../lib/cart';
 import AddToCartButton from './AddToCartButton';
 
 type ShopFilter = 'todas' | ProductCategory | 'encargos';
@@ -56,69 +59,73 @@ function ProductTile({
   const needsOptions = product.isCustomOrder || product.sizes.length > 0;
 
   return (
-    <article className="product-hover group">
-      <a href={`/producto/${product.slug}`} className="block mb-3">
+    <article className="product-hover group flex h-full flex-col">
+      <a href={`/producto/${product.slug}`} className="mb-3 block shrink-0">
         <div
           className={`media-frame ${dense ? 'aspect-square' : 'aspect-[4/5] sm:aspect-[4/3]'}`}
         >
           <img
             src={product.image ?? '/images/products/galleta-de-miel.jpg'}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500"
+            className="h-full w-full object-cover transition-transform duration-500"
             loading="lazy"
           />
         </div>
       </a>
-      <p className="text-[0.65rem] sm:text-xs uppercase tracking-[0.16em] text-[var(--color-berry-deep)] mb-1.5 font-semibold">
-        {categoryLabels[product.category]}
-      </p>
-      <h2
-        className={`font-display italic text-[var(--color-cocoa)] mb-1 leading-tight ${
-          dense ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl'
-        }`}
-      >
-        <a href={`/producto/${product.slug}`}>{product.name}</a>
-      </h2>
-      {!dense && product.description ? (
-        <p className="text-sm text-[var(--color-ink-soft)] line-clamp-2 mb-3 leading-relaxed">
-          {product.description}
+      <div className="flex min-h-0 flex-1 flex-col">
+        <p className="mb-1.5 text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[var(--color-berry-deep)] sm:text-xs">
+          {categoryLabels[product.category]}
         </p>
-      ) : (
-        <p className="mb-3 font-semibold text-[var(--color-cocoa)] text-sm sm:text-base">
-          {priceLabel(product)}
-        </p>
-      )}
-      {needsOptions ? (
-        <AddToCartButton
-          slug={product.slug}
-          name={product.name}
-          price={product.price}
-          sizes={product.sizes}
-          isCustomOrder={product.isCustomOrder}
-          available={product.available}
-          className="btn-primary text-sm px-4 py-2 w-full"
-          compact
-        />
-      ) : (
-        <div className="flex items-center justify-between gap-2">
-          {!dense ? (
-            <span className="font-semibold text-[var(--color-cocoa)]">
-              {priceLabel(product)}
-            </span>
+        <h2
+          className={`mb-1 line-clamp-2 min-h-[2.6em] font-display italic leading-tight text-[var(--color-cocoa)] ${
+            dense ? 'text-lg sm:text-xl' : 'text-xl sm:text-2xl'
+          }`}
+        >
+          <a href={`/producto/${product.slug}`}>{product.name}</a>
+        </h2>
+        {!dense && product.description ? (
+          <p className="mb-3 line-clamp-2 min-h-[2.75rem] text-sm leading-relaxed text-[var(--color-ink-soft)]">
+            {product.description}
+          </p>
+        ) : (
+          <p className="mb-3 min-h-[1.5rem] text-sm font-semibold text-[var(--color-cocoa)] sm:text-base">
+            {priceLabel(product)}
+          </p>
+        )}
+        <div className="mt-auto">
+          {needsOptions ? (
+            <AddToCartButton
+              slug={product.slug}
+              name={product.name}
+              price={product.price}
+              sizes={product.sizes}
+              isCustomOrder={product.isCustomOrder}
+              available={product.available}
+              className="btn-primary w-full px-4 py-2 text-sm"
+              compact
+            />
           ) : (
-            <span />
+            <div className="flex items-center justify-between gap-2">
+              {!dense ? (
+                <span className="font-semibold text-[var(--color-cocoa)]">
+                  {priceLabel(product)}
+                </span>
+              ) : (
+                <span />
+              )}
+              <AddToCartButton
+                slug={product.slug}
+                name={product.name}
+                price={product.price}
+                available={product.available}
+                className="btn-primary px-3 py-2 text-sm"
+                label="Agregar"
+                compact
+              />
+            </div>
           )}
-          <AddToCartButton
-            slug={product.slug}
-            name={product.name}
-            price={product.price}
-            available={product.available}
-            className="btn-primary text-sm px-3 py-2"
-            label="Agregar"
-            compact
-          />
         </div>
-      )}
+      </div>
     </article>
   );
 }
@@ -150,19 +157,27 @@ function Section({
 }
 
 function EncargosGallery({ query }: { query: string }) {
-  const [addedId, setAddedId] = useState<string | null>(null);
+  const freeformHref = `/producto/${CUSTOM_ORDER_SLUG}`;
+  const needle = normalize(query);
+  const matchesFreeform =
+    !needle ||
+    normalize(
+      'peticion personalizada encargo idea propia a medida cotizar',
+    ).includes(needle);
 
   const examples = useMemo(() => {
-    const needle = normalize(query);
-    if (!needle) return customOrderExamples;
+    const q = normalize(query);
+    if (!q) return customOrderExamples;
     return customOrderExamples.filter((ex) =>
-      normalize(`${ex.name} encargo personalizado`).includes(needle),
+      normalize(`${ex.name} ${ex.description} encargo personalizado`).includes(
+        q,
+      ),
     );
   }, [query]);
 
-  if (examples.length === 0) {
+  if (!matchesFreeform && examples.length === 0) {
     return (
-      <p className="text-[var(--color-ink-soft)] text-sm">
+      <p className="text-sm text-[var(--color-ink-soft)]">
         No hay referencias que coincidan con la búsqueda.
       </p>
     );
@@ -170,61 +185,89 @@ function EncargosGallery({ query }: { query: string }) {
 
   return (
     <section className="mb-12 sm:mb-16">
-      <div className="mb-5 sm:mb-6 max-w-2xl">
-        <p className="text-xs uppercase tracking-[0.18em] text-[var(--color-berry-deep)] mb-2 font-semibold">
+      <div className="mb-5 max-w-2xl sm:mb-6">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--color-berry-deep)]">
           A pedido
         </p>
-        <h2 className="font-display italic text-3xl sm:text-4xl text-[var(--color-cocoa)] mb-2">
+        <h2 className="mb-2 font-display italic text-3xl text-[var(--color-cocoa)] sm:text-4xl">
           Encargos personalizados
         </h2>
-        <p className="text-sm text-[var(--color-ink-soft)] leading-relaxed">
-          Elige una referencia con su precio orientativo. Confirmamos el valor
-          final según tamaño y detalles por WhatsApp.
+        <p className="text-sm leading-relaxed text-[var(--color-ink-soft)]">
+          Puedes pedir una idea tuya desde cero, o elegir una referencia de la
+          galería con precio orientativo. Confirmamos el valor final por
+          WhatsApp.
         </p>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5">
-        {examples.map((ex) => (
-          <article
-            key={ex.id}
-            className="rounded-2xl overflow-hidden bg-white/60 border border-[var(--color-berry)]/10"
-          >
-            <div className="media-frame aspect-square rounded-none">
-              <img
-                src={ex.image}
-                alt={ex.name}
-                className="w-full h-full object-cover"
-                loading="lazy"
-              />
-            </div>
-            <div className="p-3 sm:p-3.5">
-              <h3 className="font-display italic text-base sm:text-lg text-[var(--color-cocoa)] leading-snug mb-1">
-                {ex.name}
-              </h3>
-              <p className="text-sm font-semibold text-[var(--color-berry-deep)] mb-3">
-                Desde {formatPrice(ex.price)}
-              </p>
-              <button
-                type="button"
-                className="btn-primary w-full text-xs sm:text-sm px-3 py-2"
-                onClick={() => {
-                  addToCart({
-                    slug: 'encargo-personalizado',
-                    name: 'Encargo personalizado',
-                    price: ex.price,
-                    isCustomOrder: true,
-                    customReference: `${ex.name} (${formatPrice(ex.price)})`,
-                  });
-                  setAddedId(ex.id);
-                  window.setTimeout(() => setAddedId(null), 1400);
-                }}
-              >
-                {addedId === ex.id ? 'Agregado ✓' : 'Pedir esta referencia'}
-              </button>
-            </div>
-          </article>
-        ))}
-      </div>
+      {matchesFreeform && (
+        <a
+          href={freeformHref}
+          className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 rounded-2xl border border-[var(--color-berry)]/20 bg-[var(--color-berry)]/10 px-5 py-5 sm:px-6 sm:py-6 transition-colors hover:bg-[var(--color-berry)]/15"
+        >
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-berry-deep)] mb-1.5">
+              Sin referencia
+            </p>
+            <h3 className="font-display italic text-2xl sm:text-3xl text-[var(--color-cocoa)] leading-tight mb-2">
+              Petición personalizada
+            </h3>
+            <p className="text-sm text-[var(--color-ink-soft)] leading-relaxed max-w-xl">
+              Describe tu idea a medida — temática, tamaño y detalles — sin
+              basarte en los ejemplos de abajo. Cotizamos por WhatsApp.
+            </p>
+          </div>
+          <span className="btn-primary shrink-0 px-5 py-3 text-sm text-center">
+            Crear petición
+          </span>
+        </a>
+      )}
+
+      {examples.length > 0 && (
+        <>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-[var(--color-ink-soft)]">
+            O elige una referencia
+          </p>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">
+            {examples.map((ex) => {
+              const href = `/producto/${customOrderSlug(ex.id)}`;
+              return (
+                <article
+                  key={ex.id}
+                  className="flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--color-berry)]/10 bg-white/60"
+                >
+                  <a href={href} className="block shrink-0">
+                    <div className="media-frame aspect-square rounded-none">
+                      <img
+                        src={ex.image}
+                        alt={ex.name}
+                        className="h-full w-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                  </a>
+                  <div className="flex flex-1 flex-col p-3 sm:p-3.5">
+                    <h3 className="mb-1 line-clamp-2 min-h-[2.5em] font-display italic text-base leading-snug text-[var(--color-cocoa)] sm:text-lg">
+                      <a href={href}>{ex.name}</a>
+                    </h3>
+                    <p className="mb-2 line-clamp-2 min-h-[2.5rem] text-xs leading-relaxed text-[var(--color-ink-soft)] sm:text-sm">
+                      {ex.description}
+                    </p>
+                    <p className="mb-3 text-sm font-semibold text-[var(--color-berry-deep)]">
+                      Desde {formatPrice(ex.price)}
+                    </p>
+                    <a
+                      href={href}
+                      className="btn-primary mt-auto w-full px-3 py-2 text-center text-xs sm:text-sm"
+                    >
+                      Ver y pedir
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </>
+      )}
     </section>
   );
 }

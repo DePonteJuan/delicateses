@@ -22,10 +22,10 @@ export const CUSTOM_ORDER_SLUG = 'encargo-personalizado';
 
 export const customOrderProduct: Product = {
   slug: CUSTOM_ORDER_SLUG,
-  name: 'Encargo personalizado',
+  name: 'Petición personalizada',
   category: 'postres',
   description:
-    'Lo preparamos a tu medida. Elige una referencia de la galería o envíanos tu idea (foto o descripción). El precio final depende del tamaño y la decoración; en los ejemplos verás precios orientativos.',
+    'Cuéntanos tu idea desde cero: temática, colores, tamaño, ocasión y cualquier detalle. No hace falta basarte en las referencias de la galería. Cotizamos el precio final por WhatsApp según lo que necesites.',
   price: 0,
   image: '/images/products/torta-personalizada-de-harry-potter-nina.jpg',
   available: true,

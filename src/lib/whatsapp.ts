@@ -13,14 +13,20 @@ function formatLineItem(item: CartItem) {
   const sizePart = item.size ? ` (${item.size})` : '';
 
   if (item.isCustomOrder) {
+    const isFreeform = item.price === 0;
     const ref = item.customReference
-      ? ` — referencia: ${item.customReference}`
+      ? isFreeform
+        ? ` — idea: ${item.customReference}`
+        : ` — referencia: ${item.customReference}`
       : '';
     const guide =
       item.price > 0
         ? ` (precio orientativo ${formatPrice(item.price)})`
         : '';
-    return `• ${item.qty}x Encargo personalizado${ref}${guide} — a cotizar`;
+    const label = isFreeform
+      ? 'Petición personalizada'
+      : 'Encargo personalizado';
+    return `• ${item.qty}x ${label}${ref}${guide} — a cotizar`;
   }
 
   return `• ${item.qty}x ${item.name}${sizePart} — ${formatPrice(item.price * item.qty)}`;
@@ -41,7 +47,7 @@ export function buildOrderMessage({
     : `Total: ${formatPrice(pricedTotal)}`;
 
   const footer = hasCustom
-    ? ['Nombre:', 'Zona/entrega:', 'Referencia del encargo:', 'Notas:']
+    ? ['Nombre:', 'Zona/entrega:', 'Detalles del encargo / foto:', 'Notas:']
     : ['Nombre:', 'Zona/entrega:', 'Notas:'];
 
   return [greeting, '', ...lines, '', totalLine, '', ...footer].join('\n');

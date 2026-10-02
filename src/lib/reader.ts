@@ -2,6 +2,12 @@ import { createReader } from '@keystatic/core/reader';
 import keystaticConfig from '../../keystatic.config';
 import type { Product, ProductCategory, ProductSize } from './types';
 import { CUSTOM_ORDER_SLUG, customOrderProduct } from './types';
+import {
+  customOrderAsProduct,
+  customOrderExamples,
+  customOrderSlug,
+  getCustomOrderExample,
+} from './customOrders';
 import { resolveProductImage } from './format';
 
 export type { Product, ProductCategory, ProductSize } from './types';
@@ -11,6 +17,11 @@ export {
   customOrderProduct,
   productDisplayPrice,
 } from './types';
+export {
+  customOrderExamples,
+  customOrderSlug,
+  getCustomOrderExample,
+} from './customOrders';
 
 export function getReader() {
   return createReader(process.cwd(), keystaticConfig);
@@ -76,8 +87,21 @@ export async function getAllProducts(): Promise<Product[]> {
   return [customOrderProduct, ...products];
 }
 
+/** Rutas de ficha: catálogo + cada encargo de ejemplo. */
+export async function getAllProductSlugs(): Promise<string[]> {
+  const products = await getAllProducts();
+  const slugs = products.map((p) => p.slug);
+  for (const ex of customOrderExamples) {
+    slugs.push(customOrderSlug(ex.id));
+  }
+  return [...new Set(slugs)];
+}
+
 export async function getProduct(slug: string): Promise<Product | null> {
   if (slug === CUSTOM_ORDER_SLUG) return customOrderProduct;
+
+  const example = getCustomOrderExample(slug);
+  if (example) return customOrderAsProduct(example);
 
   const reader = getReader();
   const entry = await reader.collections.products.read(slug);

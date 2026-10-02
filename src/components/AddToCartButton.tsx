@@ -9,6 +9,9 @@ type Props = {
   price: number;
   sizes?: ProductSize[];
   isCustomOrder?: boolean;
+  customReference?: string;
+  /** Si true, el cliente escribe su idea (sin referencia de galería). */
+  freeformCustom?: boolean;
   available?: boolean;
   className?: string;
   label?: string;
@@ -21,6 +24,8 @@ export default function AddToCartButton({
   price,
   sizes = [],
   isCustomOrder = false,
+  customReference,
+  freeformCustom = false,
   available = true,
   className = '',
   label,
@@ -29,12 +34,16 @@ export default function AddToCartButton({
   const hasSizes = sizes.length > 0;
   const [sizeIndex, setSizeIndex] = useState(0);
   const [qty, setQty] = useState(1);
+  const [idea, setIdea] = useState('');
   const [added, setAdded] = useState(false);
 
   const selectedSize = hasSizes ? sizes[sizeIndex] : null;
   const unitPrice = selectedSize?.price ?? price;
+  const needsIdea = isCustomOrder && freeformCustom && !customReference;
   const defaultLabel = isCustomOrder
-    ? 'Agregar solicitud'
+    ? needsIdea
+      ? 'Agregar petición'
+      : 'Agregar solicitud'
     : compact
       ? 'Agregar'
       : 'Agregar al carrito';
@@ -52,13 +61,19 @@ export default function AddToCartButton({
   }
 
   const onAdd = () => {
+    const trimmedIdea = idea.trim();
+    if (needsIdea && !trimmedIdea) return;
+
     addToCart(
       {
-        slug,
+        slug: isCustomOrder ? 'encargo-personalizado' : slug,
         name,
-        price: isCustomOrder ? 0 : unitPrice,
+        price: isCustomOrder ? price : unitPrice,
         size: selectedSize?.label,
         isCustomOrder,
+        customReference: needsIdea
+          ? trimmedIdea
+          : customReference,
       },
       qty,
     );
@@ -82,6 +97,21 @@ export default function AddToCartButton({
               </option>
             ))}
           </select>
+        </label>
+      )}
+
+      {needsIdea && (
+        <label className="flex flex-col gap-1 text-sm text-[var(--color-ink-soft)]">
+          <span className="font-semibold text-[var(--color-cocoa)]">
+            Describe tu idea
+          </span>
+          <textarea
+            value={idea}
+            onChange={(event) => setIdea(event.target.value)}
+            rows={compact ? 3 : 4}
+            placeholder="Ej.: torta de unicornio, 20 porciones, colores pastel, nombre Ana…"
+            className="w-full resize-y rounded-xl border border-[var(--color-berry)]/25 bg-white/90 px-3 py-2 text-[var(--color-cocoa)] outline-none focus:ring-2 focus:ring-[var(--color-frost)]"
+          />
         </label>
       )}
 
@@ -122,10 +152,15 @@ export default function AddToCartButton({
         )}
         {isCustomOrder && (
           <p className="text-sm font-semibold text-[var(--color-berry-deep)]">
-            Precio según petición
+            {price > 0 ? `Desde ${formatPrice(price)}` : 'Precio según petición'}
           </p>
         )}
-        <button type="button" className={className} onClick={onAdd}>
+        <button
+          type="button"
+          className={className}
+          onClick={onAdd}
+          disabled={needsIdea && !idea.trim()}
+        >
           {added ? 'Agregado ✓' : label ?? defaultLabel}
         </button>
       </div>
@@ -135,7 +170,12 @@ export default function AddToCartButton({
   return (
     <div className="flex w-full flex-col gap-4">
       {controls}
-      <button type="button" className={className} onClick={onAdd}>
+      <button
+        type="button"
+        className={className}
+        onClick={onAdd}
+        disabled={needsIdea && !idea.trim()}
+      >
         {added ? 'Agregado ✓' : label ?? defaultLabel}
       </button>
     </div>

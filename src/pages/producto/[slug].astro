@@ -1,16 +1,18 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import AddToCartButton from '../../components/AddToCartButton';
-import { getAllProducts, getProduct } from '../../lib/reader';
-import { categoryLabels, CUSTOM_ORDER_SLUG } from '../../lib/types';
+import { getAllProductSlugs, getProduct } from '../../lib/reader';
+import {
+  CUSTOM_ORDER_SLUG,
+  categoryLabels,
+  productDisplayPrice,
+} from '../../lib/types';
 import { formatPrice } from '../../lib/format';
-import { productDisplayPrice } from '../../lib/types';
+import { getCustomOrderExample } from '../../lib/customOrders';
 
 export async function getStaticPaths() {
-  const products = await getAllProducts();
-  const slugs = new Set(products.map((product) => product.slug));
-  slugs.add(CUSTOM_ORDER_SLUG);
-  return [...slugs].map((slug) => ({
+  const slugs = await getAllProductSlugs();
+  return slugs.map((slug) => ({
     params: { slug },
   }));
 }
@@ -22,20 +24,31 @@ if (!product) {
   return Astro.redirect('/tienda');
 }
 
+const customExample = slug ? getCustomOrderExample(slug) : null;
+const isFreeformCustom =
+  Boolean(product.isCustomOrder) && !customExample && slug === CUSTOM_ORDER_SLUG;
+
 const priceText = product.isCustomOrder
-  ? 'Precio según petición'
+  ? product.price > 0
+    ? `Desde ${formatPrice(product.price)}`
+    : 'Precio según petición'
   : product.sizes.length > 0
     ? `Desde ${formatPrice(productDisplayPrice(product))}`
     : formatPrice(product.price);
+
+const backHref = product.isCustomOrder ? '/tienda?categoria=encargos' : '/tienda';
+const backLabel = product.isCustomOrder
+  ? '← Volver a encargos'
+  : '← Volver a la tienda';
 ---
 
 <BaseLayout title={product.name} description={product.description}>
   <section class="mx-auto max-w-6xl px-4 sm:px-5 md:px-8 py-10 sm:py-12 md:py-20">
     <a
-      href="/tienda"
+      href={backHref}
       class="inline-flex text-sm text-[var(--color-ink-soft)] hover:text-[var(--color-berry-deep)] mb-6 sm:mb-8 transition-colors"
     >
-      ← Volver a la tienda
+      {backLabel}
     </a>
 
     <div class="grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-16 items-start">
@@ -49,7 +62,7 @@ const priceText = product.isCustomOrder
 
       <div class="lg:pt-4" data-reveal style="--reveal-delay: 100ms">
         <p class="text-xs uppercase tracking-[0.2em] text-[var(--color-berry-deep)] mb-3 font-semibold">
-          {product.isCustomOrder ? 'A pedido' : categoryLabels[product.category]}
+          {product.isCustomOrder ? 'Encargo personalizado' : categoryLabels[product.category]}
         </p>
         <h1 class="font-display italic text-[clamp(2rem,7vw,3.25rem)] text-[var(--color-cocoa)] mb-4 leading-tight">
           {product.name}
@@ -57,6 +70,20 @@ const priceText = product.isCustomOrder
         <p class="text-xl sm:text-2xl font-semibold text-[var(--color-berry-deep)] mb-5 sm:mb-6">
           {priceText}
         </p>
+        {
+          product.isCustomOrder && product.price > 0 && (
+            <p class="text-sm text-[var(--color-ink-soft)] mb-4 -mt-3">
+              Precio orientativo; confirmamos el valor final por WhatsApp según tamaño y detalles.
+            </p>
+          )
+        }
+        {
+          isFreeformCustom && (
+            <p class="text-sm text-[var(--color-ink-soft)] mb-4 -mt-3">
+              Cotizamos por WhatsApp. Puedes enviar foto o más detalles al confirmar el pedido.
+            </p>
+          )
+        }
         <p class="text-[var(--color-ink-soft)] leading-relaxed mb-7 sm:mb-8 max-w-lg text-sm sm:text-base">
           {product.description}
         </p>
@@ -65,12 +92,25 @@ const priceText = product.isCustomOrder
           <AddToCartButton
             client:load
             slug={product.slug}
-            name={product.name}
+            name={isFreeformCustom ? 'Petición personalizada' : product.isCustomOrder ? 'Encargo personalizado' : product.name}
             price={product.price}
             sizes={product.sizes}
             isCustomOrder={product.isCustomOrder}
+            freeformCustom={isFreeformCustom}
+            customReference={
+              customExample
+                ? `${customExample.name} (${formatPrice(customExample.price)})`
+                : undefined
+            }
             available={product.available}
             className="btn-primary px-7 py-3.5 w-full xs:w-auto"
+            label={
+              isFreeformCustom
+                ? 'Agregar petición personalizada'
+                : product.isCustomOrder
+                  ? 'Solicitar esta referencia'
+                  : undefined
+            }
           />
           <a
             href="/carrito"

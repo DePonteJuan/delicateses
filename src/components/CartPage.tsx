@@ -95,7 +95,10 @@ export default function CartPage({
               </p>
               {item.customReference ? (
                 <p className="text-sm text-[var(--color-ink-soft)]">
-                  Referencia: {item.customReference}
+                  {item.isCustomOrder && item.price === 0
+                    ? 'Idea: '
+                    : 'Referencia: '}
+                  {item.customReference}
                 </p>
               ) : null}
               <p className="text-sm text-[var(--color-ink-soft)]">
